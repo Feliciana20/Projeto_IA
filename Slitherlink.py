@@ -4,8 +4,8 @@
 # Além das funções e classes sugeridas, podem acrescentar outras que considerem pertinentes.
 
 # Grupo 75:
-# 111085 Feliciana Carlos
-# 119226 Lara Santos
+# 111085 Feliciana Clarice Sacalema Carlos
+# 1119226 Lara Isabel da Conceição Santos
 
 import random, copy
 from sys import stdin
@@ -294,17 +294,17 @@ class Slitherlink(Problem):
         Board = node.state.board
         h_val = 0
 
-    #penaliza cada célula com um valor absoluto da diferença entre o número de arestas ativas e a dica da célula
+        #penaliza cada célula com um valor absoluto da diferença entre o número de arestas ativas e a dica da célula
         for r in range(Board.rows):
-            for c in range(Board.columns):
+            for c in range(Board.cols):
                 hint = Board.hints[r][c]
                 if hint >= 0:
                     active_edges = Board.get_active_edges(r, c)
                     h_val += abs(active_edges - hint)
 
-       #penaliza cada vértice que tem um grau diferente de 0 ou 2, já que isso viola a condição de formar um loop
+        #penaliza cada vértice que tem um grau diferente de 0 ou 2, já que isso viola a condição de formar um loop
         for r in range(Board.rows + 1):
-            for c in range(Board.columns + 1):
+            for c in range(Board.cols + 1):
                 degree = Board.vertex_degree(r, c)
                 if degree not in (0, 2):
                     h_val += 1
@@ -317,7 +317,18 @@ class Slitherlink(Problem):
 
 
 if __name__ == "__main__":
-    # TODO:
+    board = Board.parse_instance()
+    print("Board lido com sucesso")
+    print("Rows:", board.rows, "Cols:", board.cols)
+    
+    problem = Slitherlink(board)
+    print("Problema criado")
+    
+    goal_node = astar_search(problem)
+    print("Procura terminada")
+    print("Goal node:", goal_node)
+
+'''  TODO:
     # Ler o ficheiro do standard input,
     # Usar uma técnica de procura para resolver a instância,
     # Retirar a solução a partir do nó resultante,
@@ -327,10 +338,10 @@ if __name__ == "__main__":
     board = Board.parse_instance()
 
     #criação do problema a partir do tabuleiro
-    Problem = Slitherlink(board)
+    problem = Slitherlink(board)
 
     #resolução do problema usando a procura A*
-    goal_node = astar_search(Problem)
+    goal_node = astar_search(problem)
 
     #impressão da solução no formato indicado
     sol_grid = goal_node.state.board.to_solution_grid()
@@ -339,3 +350,4 @@ if __name__ == "__main__":
     for row in sol_grid:
         print(" ".join(row))
     pass
+'''
