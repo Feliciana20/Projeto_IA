@@ -2,8 +2,8 @@
 # slitherlink.py: Template para implementação do projeto de Inteligência Artificial 2025/2026.
 
 # Grupo 75:
-# 111085 Feliciana Carlos
-# 119226 Lara Santos
+# 111085 Feliciana Clarice Sacalema Carlos
+# 1119226 Lara Isabel da Conceição Santos
 
 import random, copy
 from sys import stdin, setrecursionlimit
@@ -388,25 +388,45 @@ class Slitherlink(Problem):
     def h(self, node: Node):
         board = node.state.board
         h_val = 0
-        for r in range(board.rows):
-            for c in range(board.cols):
-                hint = board.grid[r][c]
-                if hint != -1:
-                    h_val += abs(board.get_active_edges(r, c) - hint)
-        for r in range(board.rows + 1):
-            for c in range(board.cols + 1):
-                d = board.vertex_degree(r, c)
-                if d > 2:
-                    h_val += d - 2
+
+    #penaliza cada célula com um valor absoluto da diferença entre o número de arestas ativas e a dica da célula
+        for r in range(Board.rows):
+            for c in range(Board.columns):
+                hint = Board.hints[r][c]
+                if hint >= 0:
+                    active_edges = Board.get_active_edges(r, c)
+                    h_val += abs(active_edges - hint)
+
+       #penaliza cada vértice que tem um grau diferente de 0 ou 2, já que isso viola a condição de formar um loop
+        for r in range(Board.rows + 1):
+            for c in range(Board.columns + 1):
+                degree = Board.vertex_degree(r, c)
+                if degree not in (0, 2):
+                    h_val += 1
+
         return h_val
 
 
 if __name__ == "__main__":
+    # TODO:
+    # Ler o ficheiro do standard input,
+    # Usar uma técnica de procura para resolver a instância,
+    # Retirar a solução a partir do nó resultante,
+    # Imprimir para o standard output no formato indicado.
+
+    #leitura do tabuleiro a partir do standard input
     board = Board.parse_instance()
-    problem = Slitherlink(board)
+
+    #criação do problema a partir do tabuleiro
+    Problem = Slitherlink(board)
+
+    #resolução do problema usando a procura A*
+    goal_node = astar_search(Problem)
+
+    #impressão da solução no formato indicado
+    sol_grid = goal_node.state.board.to_solution_grid()
     
-    # Resolve instantaneamente através da infraestrutura clássica do enunciado
-    solution_node = depth_first_tree_search(problem)
-    
-    if solution_node:
-        print(solution_node.state.board.to_string())
+    # imprime a solução no formato indicado, cada célula é representada por uma string de 4 caracteres indicando a presença de arestas (cima, direita, baixo, esquerda)
+    for row in sol_grid:
+        print(" ".join(row))
+    pass
